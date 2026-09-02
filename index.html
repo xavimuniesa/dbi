@@ -379,14 +379,21 @@
 
     async function updateCurrencies() {
         try {
-            const data = await (await fetch('https://api.frankfurter.app/latest?from=EUR&to=CHF,USD')).json();
-            if (data.rates.CHF) {
-                document.getElementById('chfDirect').innerText = `1 € = ${data.rates.CHF.toFixed(3)} CHF`;
-                document.getElementById('chfInverse').innerText = `1 CHF = ${(1 / data.rates.CHF).toFixed(3)} €`;
-            }
-            if (data.rates.USD) {
-                document.getElementById('usdDirect').innerText = `1 € = ${data.rates.USD.toFixed(3)} $`;
-                document.getElementById('usdInverse').innerText = `1 $ = ${(1 / data.rates.USD).toFixed(3)} €`;
+            const res = await fetch('https://open.er-api.com/v6/latest/EUR');
+            const data = await res.json();
+            
+            if (data && data.rates) {
+                const chf = data.rates.CHF;
+                const usd = data.rates.USD;
+
+                if (chf) {
+                    document.getElementById('chfDirect').innerText = `1 € = ${chf.toFixed(3)} CHF`;
+                    document.getElementById('chfInverse').innerText = `1 CHF = ${(1 / chf).toFixed(3)} €`;
+                }
+                if (usd) {
+                    document.getElementById('usdDirect').innerText = `1 € = ${usd.toFixed(3)} $`;
+                    document.getElementById('usdInverse').innerText = `1 $ = ${(1 / usd).toFixed(3)} €`;
+                }
             }
         } catch (e) {}
     }
