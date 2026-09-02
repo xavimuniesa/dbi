@@ -43,14 +43,12 @@
             gap: 16px;
         }
 
-        /* Fila Superior (Rellotge + Dita) */
         .top-row {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
-        /* Graelles adaptades a Mòbil (2 columnes) */
         .grid-row {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -74,7 +72,7 @@
 
         .card-clock {
             padding: 24px 16px 16px 16px;
-            min-height: 300px;
+            min-height: 290px;
         }
 
         .card-title {
@@ -89,10 +87,9 @@
             z-index: 2;
         }
 
-        /* MONDAINE CLOCK */
         .clock-container {
             width: 100%;
-            max-width: 220px;
+            max-width: 210px;
             height: auto;
             aspect-ratio: 1 / 1;
             display: flex;
@@ -120,7 +117,6 @@
             gap: 8px;
         }
 
-        /* REFRANYER */
         .refrany-content {
             text-align: center;
             padding: 10px 5px 0 5px;
@@ -142,7 +138,6 @@
             font-size: 0.85rem;
             color: var(--text-muted);
             font-weight: 600;
-            text-transform: capitalize;
         }
 
         .refrany-source {
@@ -152,7 +147,6 @@
             text-decoration: none;
         }
 
-        /* WIDGETS INFERIORS */
         .widget-metric {
             font-size: 1.35rem;
             font-weight: 700;
@@ -174,7 +168,6 @@
         .arrow-up { color: #22c55e; }
         .arrow-down { color: #ef4444; }
 
-        /* Ajustos per a pantalles molts petites */
         @media (max-width: 360px) {
             .grid-row {
                 grid-template-columns: 1fr;
@@ -186,16 +179,12 @@
 
 <div class="dashboard">
 
-    <!-- FILA SUPERIOR -->
     <div class="top-row">
-        
-        <!-- 1. Mondaine Stop2Go + Pobles i Altitud -->
         <div class="card card-clock">
             <div class="clock-container">
                 <svg class="clock-svg" viewBox="0 0 300 300">
                     <circle cx="150" cy="150" r="140" fill="#ffffff" stroke="#000000" stroke-width="12"/>
                     <text x="150" y="97" font-family="'Montserrat', sans-serif" font-size="16" font-weight="300" letter-spacing="1.8" fill="#000000" text-anchor="middle">MONDAINE</text>
-                    
                     <g transform="translate(150, 110)">
                         <circle cx="0" cy="0" r="6.5" fill="#e30613"/>
                         <rect x="-1.3" y="-4.2" width="2.6" height="8.4" fill="#ffffff"/>
@@ -203,17 +192,13 @@
                         <text x="-8" y="0.5" font-size="8.5" font-weight="400" fill="#000000" text-anchor="end" dominant-baseline="middle">Swiss</text>
                         <text x="8" y="0.5" font-size="8.5" font-weight="400" fill="#000000" text-anchor="start" dominant-baseline="middle">Watch</text>
                     </g>
-
                     <g id="dial-marks"></g>
-
-                    <line id="hourHand" class="hand-shadow" x1="150" y1="175" x2="150" y2="68" stroke="#000000" stroke-width="14" stroke-linecap="butt"/>
-                    <line id="minuteHand" class="hand-shadow" x1="150" y1="175" x2="150" y2="26" stroke="#000000" stroke-width="12" stroke-linecap="butt"/>
-
+                    <line id="hourHand" class="hand-shadow" x1="150" y1="175" x2="150" y2="68" stroke="#000000" stroke-width="14"/>
+                    <line id="minuteHand" class="hand-shadow" x1="150" y1="175" x2="150" y2="26" stroke="#000000" stroke-width="12"/>
                     <g id="secondHand" class="hand-shadow">
-                        <line x1="150" y1="172" x2="150" y2="69" stroke="#e30613" stroke-width="3.5" stroke-linecap="butt"/>
+                        <line x1="150" y1="172" x2="150" y2="69" stroke="#e30613" stroke-width="3.5"/>
                         <circle cx="150" cy="63" r="9" fill="#e30613"/>
                     </g>
-
                     <circle cx="150" cy="150" r="5" fill="#e30613"/>
                 </svg>
             </div>
@@ -222,7 +207,6 @@
             </div>
         </div>
 
-        <!-- 2. Refrany del dia i Data d'avui -->
         <div class="card">
             <span class="card-title">Dita del Dia</span>
             <div class="refrany-content">
@@ -231,10 +215,8 @@
                 <a href="https://elrefranyer.com/" target="_blank" class="refrany-source">elrefranyer.com</a>
             </div>
         </div>
-
     </div>
 
-    <!-- SECCIÓ METEO (2x2) -->
     <div class="grid-row">
         <div class="card">
             <span class="card-title">Temp</span>
@@ -261,61 +243,27 @@
         </div>
     </div>
 
-    <!-- SECCIÓ DIVERSIÓ I SERVEIS (2x2) -->
     <div class="grid-row">
-        <!-- 1. Gasolina bonÀrea Ripollet -->
         <div class="card">
             <span class="card-title">Gasolina 95</span>
             <div class="widget-metric" id="gasVal">1.499 €</div>
             <div class="widget-sub">bonÀrea Ripollet</div>
         </div>
         
-       // --- AUTOMATITZACIÓ PARTIT FCB (Football-Data API) ---
-async function fetchNextFCBMatch() {
-    const apiKey = 'LA_TEVA_CLAU_API_AQUI'; // Clau gratuïta de football-data.org
-    const teamId = 81; // ID del FC Barcelona
+        <div class="card">
+            <span class="card-title">Pròxim FCB</span>
+            <div class="widget-metric" style="font-size: 1rem; text-align: center;" id="fcbMatch">
+                Diumenge 06/09, 16:15h
+            </div>
+            <div class="widget-sub" id="fcbRival">vs. Valencia CF</div>
+        </div>
 
-    try {
-        const res = await fetch(`https://api.football-data.org/v4/teams/${teamId}/matches?status=SCHEDULED&limit=1`, {
-            headers: { 'X-Auth-Token': apiKey }
-        });
-        const data = await res.json();
-
-        if (data.matches && data.matches.length > 0) {
-            const nextMatch = data.matches[0];
-            const matchDate = new Date(nextMatch.utcDate);
-
-            // Format de la data
-            const dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
-            const nomDia = dies[matchDate.getDay()];
-            const dia = String(matchDate.getDate()).padStart(2, '0');
-            const mes = String(matchDate.getMonth() + 1).padStart(2, '0');
-            const hora = String(matchDate.getHours()).padStart(2, '0');
-            const min = String(matchDate.getMinutes()).padStart(2, '0');
-
-            const isHome = nextMatch.homeTeam.id === teamId;
-            const rival = isHome ? nextMatch.awayTeam.shortName || nextMatch.awayTeam.name : nextMatch.homeTeam.shortName || nextMatch.homeTeam.name;
-            const condicio = isHome ? 'vs.' : '@';
-
-            document.getElementById('fcbMatch').innerText = `${nomDia} ${dia}/${mes}, ${hora}:${min}h`;
-            document.getElementById('fcbRival').innerText = `${condicio} ${rival}`;
-        }
-    } catch (e) {
-        document.getElementById('fcbMatch').innerText = "Diumenge 06/09, 16:15h";
-        document.getElementById('fcbRival').innerText = "vs. Valencia CF";
-    }
-}
-
-fetchNextFCBMatch();
-
-        <!-- 3. Canvi EUR - CHF -->
         <div class="card">
             <span class="card-title">EUR / CHF</span>
             <div class="widget-metric" style="font-size: 1.1rem;" id="chfDirect">1 € = -- CHF</div>
             <div class="widget-sub" id="chfInverse">1 CHF = -- €</div>
         </div>
 
-        <!-- 4. Canvi EUR - USD -->
         <div class="card">
             <span class="card-title">EUR / USD</span>
             <div class="widget-metric" style="font-size: 1.1rem;" id="usdDirect">1 € = -- $</div>
@@ -326,165 +274,123 @@ fetchNextFCBMatch();
 </div>
 
 <script>
-    // --- FORMATAR DATA D'AVUI ---
     function displayCurrentDate() {
         const today = new Date();
         const dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
-        const nomDia = dies[today.getDay()];
-        const dia = today.getDate();
-        const mes = String(today.getMonth() + 1).padStart(2, '0');
-        const any = today.getFullYear();
-
-        document.getElementById('currentDateText').innerText = `${nomDia}, ${dia}/${mes}/${any}`;
+        document.getElementById('currentDateText').innerText = `${dies[today.getDay()]}, ${today.getDate()}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
     }
     displayCurrentDate();
-    setInterval(displayCurrentDate, 60000);
 
-    // --- DIAL DEL RELLOTGE MONDAINE ---
     const marksGroup = document.getElementById('dial-marks');
     for (let i = 0; i < 60; i++) {
-        const angle = i * 6;
         const isHour = i % 5 === 0;
         const mark = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        mark.setAttribute("x1", "150");
-        mark.setAttribute("y1", "22");
-        mark.setAttribute("x2", "150");
-        mark.setAttribute("y2", isHour ? "52" : "32");
-        mark.setAttribute("stroke", "#000000");
-        mark.setAttribute("stroke-width", isHour ? "11" : "3.5");
-        mark.setAttribute("stroke-linecap", "butt");
-        mark.setAttribute("transform", `rotate(${angle} 150 150)`);
+        mark.setAttribute("x1", "150"); mark.setAttribute("y1", "22");
+        mark.setAttribute("x2", "150"); mark.setAttribute("y2", isHour ? "52" : "32");
+        mark.setAttribute("stroke", "#000000"); mark.setAttribute("stroke-width", isHour ? "11" : "3.5");
+        mark.setAttribute("transform", `rotate(${i * 6} 150 150)`);
         marksGroup.appendChild(mark);
     }
 
-    // --- ANIMACIÓ STOP2GO (~60 FPS) ---
     function updateClock() {
         const now = new Date();
-        const ms = now.getMilliseconds();
-        const s = now.getSeconds();
-        const m = now.getMinutes();
-        const h = now.getHours();
-
+        const ms = now.getMilliseconds(), s = now.getSeconds(), m = now.getMinutes(), h = now.getHours();
         let secondAngle = (s < 58) ? ((s * 1000 + ms) / 58000) * 360 : 360;
-        const minuteAngle = m * 6;
-        const hourAngle = ((h % 12) * 30) + (m * 0.5);
-
         document.getElementById('secondHand').setAttribute('transform', `rotate(${secondAngle} 150 150)`);
-        document.getElementById('minuteHand').setAttribute('transform', `rotate(${minuteAngle} 150 150)`);
-        document.getElementById('hourHand').setAttribute('transform', `rotate(${hourAngle} 150 150)`);
-
+        document.getElementById('minuteHand').setAttribute('transform', `rotate(${m * 6} 150 150)`);
+        document.getElementById('hourHand').setAttribute('transform', `rotate(${((h % 12) * 30) + (m * 0.5)} 150 150)`);
         requestAnimationFrame(updateClock);
     }
     requestAnimationFrame(updateClock);
 
-    // --- REFRANY DEL DIA ---
     async function fetchRefrany() {
         try {
             const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://elrefranyer.com/'));
             const data = await res.json();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(data.contents, 'text/html');
+            const doc = new DOMParser().parseFromString(data.contents, 'text/html');
             const refranyEl = doc.querySelector('.refrany-del-dia, article p, .entry-content p');
-            if (refranyEl && refranyEl.innerText.trim()) {
-                document.getElementById('refranyText').innerText = `«${refranyEl.innerText.trim()}»`;
-            } else {
-                document.getElementById('refranyText').innerText = "«A la vora del foc, al gener, s'hi està molt bé.»";
-            }
+            if (refranyEl && refranyEl.innerText.trim()) document.getElementById('refranyText').innerText = `«${refranyEl.innerText.trim()}»`;
+            else document.getElementById('refranyText').innerText = "«A la vora del foc, al gener, s'hi està molt bé.»";
         } catch (e) {
             document.getElementById('refranyText').innerText = "«Qui no guarda quan té, no menja quan vol.»";
         }
     }
     fetchRefrany();
 
-    // --- METEO (CADA 10 MINUTS) ---
     function updateWeather() {
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(async (pos) => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-
                 try {
-                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,surface_pressure&hourly=surface_pressure&elevation=nan`);
+                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,surface_pressure&hourly=surface_pressure`);
                     const data = await res.json();
-                    
                     if (data.current) {
                         document.getElementById('tempVal').innerText = `${Math.round(data.current.temperature_2m)} °C`;
                         document.getElementById('humVal').innerText = `${Math.round(data.current.relative_humidity_2m)} %`;
                         document.getElementById('sensVal').innerText = `${Math.round(data.current.apparent_temperature)} °C`;
                         document.getElementById('presVal').innerText = `${Math.round(data.current.surface_pressure)} hPa`;
-                        
-                        const nextPressure = data.hourly.surface_pressure[1] || data.current.surface_pressure;
-                        const trendEl = document.getElementById('presTrend');
-                        if (nextPressure > data.current.surface_pressure) {
-                            trendEl.innerText = '↑';
-                            trendEl.className = 'arrow-up';
-                        } else {
-                            trendEl.innerText = '↓';
-                            trendEl.className = 'arrow-down';
-                        }
                     }
-                    if (data.elevation !== undefined) {
-                        document.getElementById('locAlt').innerText = `${Math.round(data.elevation)} m`;
-                    }
+                    if (data.elevation !== undefined) document.getElementById('locAlt').innerText = `${Math.round(data.elevation)} m`;
                 } catch (e) {}
-
                 try {
-                    const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=ca`);
-                    const geo = await res.json();
+                    const geo = await (await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&localityLanguage=ca`)).json();
                     document.getElementById('locCity').innerText = geo.city || geo.locality || "Ubicació";
-                } catch (e) {
-                    document.getElementById('locCity').innerText = "Ripollet";
-                }
+                } catch (e) { document.getElementById('locCity').innerText = "Ripollet"; }
             });
         }
     }
     updateWeather();
-    setInterval(updateWeather, 600000);
 
-    // --- DIVISES AMB FALLBACK I TRACTAMENT D'ERRORS ---
-    async function updateCurrencies() {
-        const chfDirect = document.getElementById('chfDirect');
-        const usdDirect = document.getElementById('usdDirect');
-        const chfInverse = document.getElementById('chfInverse');
-        const usdInverse = document.getElementById('usdInverse');
-
+    async function updateFCBMatch() {
         try {
-            let res = await fetch('https://api.frankfurter.app/latest?from=EUR&to=CHF,USD');
-            if (!res.ok) throw new Error('Error Frankfurter');
-            let data = await res.json();
-            
-            renderCurrencies(data.rates.CHF, data.rates.USD);
-        } catch (e) {
-            try {
-                let res = await fetch('https://open.er-api.com/v6/latest/EUR');
-                let data = await res.json();
-                if (data && data.rates) {
-                    renderCurrencies(data.rates.CHF, data.rates.USD);
-                } else {
-                    throw new Error('Error fallback API');
+            const res = await fetch('https://raw.githubusercontent.com/openfootball/spanish-la-liga/master/2026-27/es.1.json');
+            const data = await res.json();
+            const now = new Date();
+            let nextMatch = null;
+
+            for (const round of data.rounds) {
+                for (const match of round.matches) {
+                    if (match.team1.code === 'BAR' || match.team2.code === 'BAR') {
+                        const mDate = new Date(match.date + 'T' + (match.time || '20:00') + ':00');
+                        if (mDate >= now) {
+                            nextMatch = { match, mDate, isHome: match.team1.code === 'BAR' };
+                            break;
+                        }
+                    }
                 }
-            } catch (err) {
-                chfDirect.innerText = "1 € = ~0.940 CHF";
-                chfInverse.innerText = "1 CHF = ~1.064 €";
-                usdDirect.innerText = "1 € = ~1.080 $";
-                usdInverse.innerText = "1 $ = ~0.926 €";
+                if (nextMatch) break;
             }
+
+            if (nextMatch) {
+                const dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
+                const rival = nextMatch.isHome ? nextMatch.match.team2.name : nextMatch.match.team1.name;
+                const prefix = nextMatch.isHome ? 'vs.' : '@';
+                const dayStr = `${dies[nextMatch.mDate.getDay()]} ${String(nextMatch.mDate.getDate()).padStart(2, '0')}/${String(nextMatch.mDate.getMonth() + 1).padStart(2, '0')}`;
+                const timeStr = `${String(nextMatch.mDate.getHours()).padStart(2, '0')}:${String(nextMatch.mDate.getMinutes()).padStart(2, '0')}h`;
+
+                document.getElementById('fcbMatch').innerText = `${dayStr}, ${timeStr}`;
+                document.getElementById('fcbRival').innerText = `${prefix} ${rival}`;
+            }
+        } catch (e) {
+            document.getElementById('fcbMatch').innerText = "Diumenge 06/09, 16:15h";
+            document.getElementById('fcbRival').innerText = "vs. Valencia CF";
         }
     }
+    updateFCBMatch();
 
-    function renderCurrencies(chf, usd) {
-        if (chf) {
-            document.getElementById('chfDirect').innerText = `1 € = ${chf.toFixed(3)} CHF`;
-            document.getElementById('chfInverse').innerText = `1 CHF = ${(1 / chf).toFixed(3)} €`;
-        }
-        if (usd) {
-            document.getElementById('usdDirect').innerText = `1 € = ${usd.toFixed(3)} $`;
-            document.getElementById('usdInverse').innerText = `1 $ = ${(1 / usd).toFixed(3)} €`;
-        }
+    async function updateCurrencies() {
+        try {
+            const data = await (await fetch('https://api.frankfurter.app/latest?from=EUR&to=CHF,USD')).json();
+            if (data.rates.CHF) {
+                document.getElementById('chfDirect').innerText = `1 € = ${data.rates.CHF.toFixed(3)} CHF`;
+                document.getElementById('chfInverse').innerText = `1 CHF = ${(1 / data.rates.CHF).toFixed(3)} €`;
+            }
+            if (data.rates.USD) {
+                document.getElementById('usdDirect').innerText = `1 € = ${data.rates.USD.toFixed(3)} $`;
+                document.getElementById('usdInverse').innerText = `1 $ = ${(1 / data.rates.USD).toFixed(3)} €`;
+            }
+        } catch (e) {}
     }
-
     updateCurrencies();
-    setInterval(updateCurrencies, 3600000);
 </script>
 </body>
 </html>
