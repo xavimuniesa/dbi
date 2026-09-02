@@ -270,14 +270,43 @@
             <div class="widget-sub">bonÀrea Ripollet</div>
         </div>
         
-        <!-- 2. Proper Partit FC Barcelona -->
-        <div class="card">
-            <span class="card-title">Pròxim FCB</span>
-            <div class="widget-metric" style="font-size: 1rem; text-align: center;" id="fcbMatch">
-                Diumenge 21:00h
-            </div>
-            <div class="widget-sub" id="fcbRival">vs. Reial Madrid</div>
-        </div>
+       // --- AUTOMATITZACIÓ PARTIT FCB (Football-Data API) ---
+async function fetchNextFCBMatch() {
+    const apiKey = 'LA_TEVA_CLAU_API_AQUI'; // Clau gratuïta de football-data.org
+    const teamId = 81; // ID del FC Barcelona
+
+    try {
+        const res = await fetch(`https://api.football-data.org/v4/teams/${teamId}/matches?status=SCHEDULED&limit=1`, {
+            headers: { 'X-Auth-Token': apiKey }
+        });
+        const data = await res.json();
+
+        if (data.matches && data.matches.length > 0) {
+            const nextMatch = data.matches[0];
+            const matchDate = new Date(nextMatch.utcDate);
+
+            // Format de la data
+            const dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
+            const nomDia = dies[matchDate.getDay()];
+            const dia = String(matchDate.getDate()).padStart(2, '0');
+            const mes = String(matchDate.getMonth() + 1).padStart(2, '0');
+            const hora = String(matchDate.getHours()).padStart(2, '0');
+            const min = String(matchDate.getMinutes()).padStart(2, '0');
+
+            const isHome = nextMatch.homeTeam.id === teamId;
+            const rival = isHome ? nextMatch.awayTeam.shortName || nextMatch.awayTeam.name : nextMatch.homeTeam.shortName || nextMatch.homeTeam.name;
+            const condicio = isHome ? 'vs.' : '@';
+
+            document.getElementById('fcbMatch').innerText = `${nomDia} ${dia}/${mes}, ${hora}:${min}h`;
+            document.getElementById('fcbRival').innerText = `${condicio} ${rival}`;
+        }
+    } catch (e) {
+        document.getElementById('fcbMatch').innerText = "Diumenge 06/09, 16:15h";
+        document.getElementById('fcbRival').innerText = "vs. Valencia CF";
+    }
+}
+
+fetchNextFCBMatch();
 
         <!-- 3. Canvi EUR - CHF -->
         <div class="card">
