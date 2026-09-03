@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Taulell de Control - iPhone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --panel-bg: #0f172a;
+            --panel-surface: #1e293b;
+            --panel-line: #334155;
+            --panel-line-bright: #475569;
+            --accent-red: #e30613;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --trend-up: #22c55e;
+            --trend-down: #ef4444;
+            --trend-flat: #94a3b8;
+            --status-warning: #f59e0b;
+            --font-main: 'Montserrat', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-main);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            min-height: 100%;
+        }
+
+        body {
+            background-color: var(--panel-bg);
+            background-image:
+                radial-gradient(ellipse 700px 400px at 50% -10%, rgba(120, 140, 180, 0.07), transparent),
+                linear-gradient(180deg, #0d1424 0%, #0a0f1c 100%);
+            color: var(--text-primary);
+            min-height: 100dvh;
+            padding: calc(env(safe-area-inset-top, 0px) + 18px) calc(env(safe-area-inset-right, 0px) + 14px) calc(env(safe-area-inset-bottom, 0px) + 24px) calc(env(safe-area-inset-left, 0px) + 14px);
+        }
+
+        .page {
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* ---------- Status ---------- */
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 2px;
+            font-weight: 700;
+            font-size: 0.66rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--trend-up);
+            animation: pulse 2.6s ease-out infinite;
+        }
+
+        @keyframes pulse {
+            0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+            70%  { box-shadow: 0 0 0 7px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .status-dot { animation: none; }
+        }
+
+        /* ---------- Cards ---------- */
+
+        .card {
+            background-color: var(--panel-surface);
+            border: 1px solid var(--panel-line);
+            border-radius: 16px;
+            padding: 18px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
+            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .card:active {
+            transform: scale(0.97);
+            border-color: var(--accent-red);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.45);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .card { transition: none; }
+            .card:active { transform: none; }
+        }
+
+        .card-title {
+            position: absolute;
+            top: 13px;
+            left: 16px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 700;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            z-index: 2;
+        }
+
+        .card-title svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ---------- Clock ---------- */
+
+        .card-clock {
+            padding: 30px 16px 20px;
+        }
+
+        .clock-container {
+            width: min(58vw, 240px);
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+        }
+
+        .clock-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0px 8px 14px rgba(0, 0, 0, 0.45));
+        }
+
+        .hand-shadow {
+            filter: drop-shadow(2px 3px 3px rgba(0, 0, 0, 0.25));
+        }
+
+        .clock-footer {
+            margin-top: 10px;
+            font-size: clamp(1rem, 4.2vw, 1.2rem);
+            color: #ffffff;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clock-footer .divider {
+            color: var(--panel-line-bright);
+        }
+
+        /* ---------- Dita del dia ---------- */
+
+        .refrany-content {
+            width: 100%;
+            text-align: center;
+            padding: 20px 6px 0 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .refrany-text {
+            font-size: clamp(1rem, 4vw, 1.15rem);
+            font-weight: 600;
+            font-style: italic;
+            line-height: 1.45;
+            color: var(--text-primary);
+        }
+
+        .refrany-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .refrany-source {
+            font-size: 0.78rem;
+            color: var(--accent-red);
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+        }
+
+        .refrany-source:active,
+        .refrany-source:focus-visible {
+            border-bottom-color: var(--accent-red);
+        }
+
+        /* ---------- Metric grids ---------- */
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .widget-metric {
+            margin-top: 10px;
+            font-size: clamp(1.1rem, 5.2vw, 1.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .widget-metric.metric-sm {
+            font-size: clamp(0.85rem, 3.6vw, 1.05rem);
+            white-space: normal;
+            text-align: center;
+        }
+
+        .widget-sub {
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .trend-up { color: var(--trend-up); }
+        .trend-down { color: var(--trend-down); }
+        .trend-flat { color: var(--trend-flat); }
+
+        .gas-status { font-weight: 600; font-size: 0.68rem; }
+        .gas-status.status-ok { color: var(--trend-up); }
+        .gas-status.status-warning { color: var(--status-warning); }
+        .gas-status.status-error { color: var(--trend-down); }
+
+        /* ---------- Landscape ---------- */
+
+        @media (orientation: landscape) {
+            .page { max-width: 640px; }
+            .grid-row { grid-template-columns: repeat(4, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+
+    <div class="status-bar">
+        <span class="status-dot"></span>
+        <span>Dades en directe</span>
+    </div>
+
+    <div class="card card-clock">
+        <div class="clock-container">
+            <svg class="clock-svg" viewBox="0 0 300 300">
+                <circle cx="150" cy="150" r="140" fill="#ffffff" stroke="#000000" stroke-width="12"/>
+                <text x="150" y="97" font-family="'Montserrat', sans-serif" font-size="16" font-weight="300" letter-spacing="1.8" fill="#000000" text-anchor="middle">MONDAINE</text>
+                <g transform="translate(150, 110)">
+                    <circle cx="0" cy="0" r="6.5" fill="#e30613"/>
+                    <rect x="-1.3" y="-4.2" width="2.6" height="8.4" fill="#ffffff"/>
+                    <rect x="-4.2" y="-1.3" width="8.4" height="2.6" fill="#ffffff"/>
+                    <text x="-8" y="0.5" font-size="8.5" font-weight="400" fill="#000000" text-anchor="end" dominant-baseline="middle">Swiss</text>
+                    <text x="8" y="0.5" font-size="8.5" font-weight="400" fill="#000000" text-anchor="start" dominant-baseline="middle">Watch</text>
+                </g>
+                <g id="dial-marks"></g>
+                <line id="hourHand" class="hand-shadow" x1="150" y1="175" x2="150" y2="68" stroke="#000000" stroke-width="14"/>
+                <line id="minuteHand" class="hand-shadow" x1="150" y1="175" x2="150" y2="26" stroke="#000000" stroke-width="12"/>
+                <g id="secondHand" class="hand-shadow">
+                    <line x1="150" y1="172" x2="150" y2="69" stroke="#e30613" stroke-width="3.5"/>
+                    <circle cx="150" cy="63" r="9" fill="#e30613"/>
+                </g>
+                <circle cx="150" cy="150" r="5" fill="#e30613"/>
+            </svg>
+        </div>
+        <div class="clock-footer">
+            <span id="locCity">Localitzant...</span> <span class="divider">|</span> <span id="locAlt">-- m</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <span class="card-title">
+            <svg viewBox="0 0 24 24"><path d="M7 7c-1.5 0-3 1.5-3 4s1.5 4 3 4"/><path d="M15 7c-1.5 0-3 1.5-3 4s1.5 4 3 4"/></svg>
+            Dita del Dia
+        </span>
+        <div class="refrany-content">
+            <p class="refrany-text" id="refranyText">«Carregant refrany...»</p>
+            <p class="refrany-date" id="currentDateText">--</p>
+            <a href="https://elrefranyer.com/" target="_blank" class="refrany-source">elrefranyer.com</a>
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div class="card">
+            <span class="card-title">
+                <svg viewBox="0 0 24 24"><path d="M12 14.5V5a2 2 0 1 0-4 0v9.5a4 4 0 1 0 4 0z"/></svg>
+                Temp
+            </span>
+            <div class="widget-metric" id="tempVal">-- °C</div>
+            <div class="widget-sub">Temperatura</div>
+        </div>
+        <div class="card">
+            <span class="card-title">
+                <svg viewBox="0 0 24 24"><path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/></svg>
+                Hum
+            </span>
+            <div class="widget-metric" id="humVal">-- %</div>
+            <div class="widget-sub">Humitat</div>
+        </div>
+        <div class="card">
+            <span class="card-title">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="3" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21"/><line x1="3" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21" y2="12"/><line x1="5.6" y1="5.6" x2="7" y2="7"/><line x1="17" y1="17" x2="18.4" y2="18.4"/><line x1="18.4" y1="5.6" x2="17" y2="7"/><line x1="7" y1="17" x2="5.6" y2="18.4"/></svg>
+                Sens
+            </span>
+            <div class="widget-metric" id="sensVal">-- °C</div>
+            <div class="widget-sub">Sensació</div>
+        </div>
+        <div class="card">
+            <span class="card-title">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12l3.5-3.5"/><path d="M12 8v1"/></svg>
+                Pres
+            </span>
+            <div class="widget-metric">
+                <span id="presVal">-- hPa</span>
+                <span id="presTrend" class="trend-flat">→</span>
+            </div>
+            <div class="widget-sub">Pressió</div>
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div class="card">
+            <span class="card-title">
+                <svg viewBox="0 0 24 24"><rect x="4" y="4" width="9" height="16" rx="1"/><line x1="4" y1="9" x2="13" y2="9"/><path d="M13 8h2.5a1.5 1.5 0 0 1 1.5 1.5V17a1.5 1.5 0 0 0 3 0v-6l-2-2"/></svg>
+                Gasolina 95
+            </span>
+            <div class="widget-metric" id="gasVal">Carregant...</div>
+            <div class="widget-sub">bonÀrea Ripollet</div>
+            <div class="widget-sub gas-status" id="gasStatus">Consultant MITECO…</div>
+        </div>
+        <div class="card">
+            <span class="card-title">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7l3 2-1 3.5h-4L9 9z"/><path d="M12 7V4"/><path d="M9 12.5L5 14"/><path d="M15 12.5L19 14"/></svg>
+                Pròxim FCB
+            </span>
+            <div class="widget-sub" id="fcbMatch">Diumenge 06/09, 16:15h</div>
+            <div class="widget-metric metric-sm" id="fcbRival">vs. Valencia CF</div>
+        </div>
+        <div class="card">
+            <span class="card-title">
+                <svg viewBox="0 0 24 24"><path d="M4 8h13"/><path d="M14 5l3 3-3 3"/><path d="M20 16H7"/><path d="M10 13l-3 3 3 3"/></svg>
+                EUR / CHF
+            </span>
+            <div class="widget-metric metric-sm" id="chfDirect">1 € = -- CHF</div>
+            <div class="widget-metric metric-sm" id="chfInverse">1 CHF = -- €</div>
+        </div>
+        <div class="card">
+            <span class="card-title">
+                <svg viewBox="0 0 24 24"><path d="M4 8h13"/><path d="M14 5l3 3-3 3"/><path d="M20 16H7"/><path d="M10 13l-3 3 3 3"/></svg>
+                EUR / USD
+            </span>
+            <div class="widget-metric metric-sm" id="usdDirect">1 € = -- $</div>
+            <div class="widget-metric metric-sm" id="usdInverse">1 $ = -- €</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Fa que ::active respongui de debò al tocar (iOS Safari només activa
+    // aquest pseudoclasse en elements no interactius si hi ha un listener
+    // de touch actiu en algun ancestre).
+    document.addEventListener('touchstart', function () {}, { passive: true });
+
+    function displayCurrentDate() {
+        const today = new Date();
+        const dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
+        document.getElementById('currentDateText').innerText = `${dies[today.getDay()]}, ${today.getDate()}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+    }
+    displayCurrentDate();
+
+    const marksGroup = document.getElementById('dial-marks');
+    for (let i = 0; i < 60; i++) {
+        const isHour = i % 5 === 0;
+        const mark = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        mark.setAttribute("x1", "150"); mark.setAttribute("y1", "22");
+        mark.setAttribute("x2", "150"); mark.setAttribute("y2", isHour ? "52" : "32");
+        mark.setAttribute("stroke", "#000000"); mark.setAttribute("stroke-width", isHour ? "11" : "3.5");
+        mark.setAttribute("transform", `rotate(${i * 6} 150 150)`);
+        marksGroup.appendChild(mark);
+    }
+
+    function updateClock() {
+        const now = new Date();
+        const ms = now.getMilliseconds(), s = now.getSeconds(), m = now.getMinutes(), h = now.getHours();
+        let secondAngle = (s < 58) ? ((s * 1000 + ms) / 58000) * 360 : 360;
+        document.getElementById('secondHand').setAttribute('transform', `rotate(${secondAngle} 150 150)`);
+        document.getElementById('minuteHand').setAttribute('transform', `rotate(${m * 6} 150 150)`);
+        document.getElementById('hourHand').setAttribute('transform', `rotate(${((h % 12) * 30) + (m * 0.5)} 150 150)`);
+        requestAnimationFrame(updateClock);
+    }
+    requestAnimationFrame(updateClock);
+
+    async function fetchRefrany() {
+        try {
+            const res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://elrefranyer.com/'));
+            const html = await res.text();
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+
+            const detailLink = doc.querySelector('a[href*="/ref/"]');
+
+            let quote = '';
+            if (detailLink) {
+                let container = detailLink.parentElement;
+                let hops = 0;
+                while (container && hops < 4 && !quote) {
+                    const leafTexts = Array.from(container.querySelectorAll('*'))
+                        .filter(el => el.children.length === 0)
+                        .map(el => el.textContent.trim())
+                        .filter(t => t && t !== 'Refrany del dia' && t !== 'Veure detall');
+                    if (leafTexts.length >= 2) {
+                        quote = `${leafTexts[0]}: ${leafTexts[1]}`;
+                    }
+                    container = container.parentElement;
+                    hops++;
+                }
+            }
+
+            if (quote && quote.length > 0 && quote.length < 260) {
+                document.getElementById('refranyText').innerText = `«${quote}»`;
+            } else {
+                document.getElementById('refranyText').innerText = "«A la vora del foc, al gener, s'hi està molt bé.»";
+            }
+        } catch (e) {
+            document.getElementById('refranyText').innerText = "«Qui no guarda quan té, no menja quan vol.»";
+        }
+    }
+    fetchRefrany();
+    setInterval(fetchRefrany, 60 * 60 * 1000);
+
+    function updateWeather() {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                try {
+                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,surface_pressure&hourly=surface_pressure`);
+                    const data = await res.json();
+                    if (data.current) {
+                        document.getElementById('tempVal').innerText = `${Math.round(data.current.temperature_2m)} °C`;
+                        document.getElementById('humVal').innerText = `${Math.round(data.current.relative_humidity_2m)} %`;
+                        document.getElementById('sensVal').innerText = `${Math.round(data.current.apparent_temperature)} °C`;
+                        document.getElementById('presVal').innerText = `${Math.round(data.current.surface_pressure)} hPa`;
+
+                        const trendEl = document.getElementById('presTrend');
+                        if (data.hourly && data.hourly.time && data.hourly.surface_pressure) {
+                            const nowKey = new Date().toISOString().slice(0, 13);
+                            const idx = data.hourly.time.findIndex(t => t.startsWith(nowKey));
+                            if (idx > 3) {
+                                const past = data.hourly.surface_pressure[idx - 3];
+                                const diff = data.current.surface_pressure - past;
+                                if (diff > 0.5) {
+                                    trendEl.textContent = '↑';
+                                    trendEl.className = 'trend-up';
+                                } else if (diff < -0.5) {
+                                    trendEl.textContent = '↓';
+                                    trendEl.className = 'trend-down';
+                                } else {
+                                    trendEl.textContent = '→';
+                                    trendEl.className = 'trend-flat';
+                                }
+                            }
+                        }
+                    }
+                    if (data.elevation !== undefined) document.getElementById('locAlt').innerText = `${Math.round(data.elevation)} m`;
+                } catch (e) {}
+                try {
+                    const geo = await (await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&localityLanguage=ca`)).json();
+                    document.getElementById('locCity').innerText = geo.city || geo.locality || "Ubicació";
+                } catch (e) { document.getElementById('locCity').innerText = "Ripollet"; }
+            });
+        }
+    }
+    updateWeather();
+
+    async function updateFCBMatch() {
+        try {
+            const res = await fetch('https://raw.githubusercontent.com/openfootball/spanish-la-liga/master/2026-27/es.1.json');
+            const data = await res.json();
+            const now = new Date();
+            let nextMatch = null;
+
+            for (const round of data.rounds) {
+                for (const match of round.matches) {
+                    if (match.team1.code === 'BAR' || match.team2.code === 'BAR') {
+                        const mDate = new Date(match.date + 'T' + (match.time || '20:00') + ':00');
+                        if (mDate >= now) {
+                            nextMatch = { match, mDate, isHome: match.team1.code === 'BAR' };
+                            break;
+                        }
+                    }
+                }
+                if (nextMatch) break;
+            }
+
+            if (nextMatch) {
+                const dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
+                const rival = nextMatch.isHome ? nextMatch.match.team2.name : nextMatch.match.team1.name;
+                const prefix = nextMatch.isHome ? 'vs.' : '@';
+                const dayStr = `${dies[nextMatch.mDate.getDay()]} ${String(nextMatch.mDate.getDate()).padStart(2, '0')}/${String(nextMatch.mDate.getMonth() + 1).padStart(2, '0')}`;
+                const timeStr = `${String(nextMatch.mDate.getHours()).padStart(2, '0')}:${String(nextMatch.mDate.getMinutes()).padStart(2, '0')}h`;
+
+                document.getElementById('fcbMatch').innerText = `${dayStr}, ${timeStr}`;
+                document.getElementById('fcbRival').innerText = `${prefix} ${rival}`;
+            }
+        } catch (e) {
+            document.getElementById('fcbMatch').innerText = "Diumenge 06/09, 16:15h";
+            document.getElementById('fcbRival').innerText = "vs. Valencia CF";
+        }
+    }
+    updateFCBMatch();
+
+    // PREU DE LA GASOLINA 95 — Font oficial: Ministeri per a la Transició Ecològica.
+    let lastGasPrice = null;
+
+    function setGasStatus(text, state) {
+        const el = document.getElementById('gasStatus');
+        if (el) {
+            el.textContent = text;
+            el.className = `widget-sub gas-status ${state || ''}`;
+        }
+    }
+
+    async function updateGasPrice() {
+        const gasEl = document.getElementById('gasVal');
+        setGasStatus('Consultant MITECO…', '');
+        try {
+            const officialUrl = 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/';
+            const res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(officialUrl));
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+            const stations = data.ListaEESSPrecio || [];
+
+            const norm = (s) => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+            const candidates = stations.filter(st =>
+                norm(st['Municipio']) === 'RIPOLLET' && norm(st['Rótulo']).includes('BONAREA')
+            );
+            const station = candidates.find(st => norm(st['Dirección']).includes('SANT JAUME')) || candidates[0];
+            if (!station) throw new Error('No s\'ha trobat bonÀrea Ripollet');
+
+            const raw = station['Precio Gasolina 95 E5'] || station['Precio Gasolina 95 E5 Premium'];
+            if (!raw) throw new Error('Preu de Gasolina 95 no disponible');
+
+            const price = parseFloat(String(raw).replace(',', '.'));
+            if (!Number.isFinite(price)) throw new Error('Preu no vàlid');
+
+            lastGasPrice = price;
+            gasEl.innerText = `${price.toFixed(3)} €`;
+
+            let hora = '';
+            if (data.Fecha) {
+                const parts = String(data.Fecha).split(' ');
+                if (parts[1]) hora = parts[1].slice(0, 5);
+            }
+            setGasStatus(hora ? `MITECO · dades ${hora}` : 'MITECO · preu actual', 'status-ok');
+        } catch (e) {
+            if (lastGasPrice !== null) {
+                gasEl.innerText = `${lastGasPrice.toFixed(3)} €`;
+                setGasStatus('Últim preu disponible · font no accessible', 'status-warning');
+            } else {
+                gasEl.innerText = '—';
+                setGasStatus('Font temporalment no disponible', 'status-error');
+            }
+        }
+    }
+    updateGasPrice();
+    setInterval(updateGasPrice, 15 * 60 * 1000);
+
+    async function updateCurrencies() {
+        try {
+            const res = await fetch('https://open.er-api.com/v6/latest/EUR');
+            const data = await res.json();
+
+            if (data && data.rates) {
+                const chf = data.rates.CHF;
+                const usd = data.rates.USD;
+
+                if (chf) {
+                    document.getElementById('chfDirect').innerText = `1 € = ${chf.toFixed(3)} CHF`;
+                    document.getElementById('chfInverse').innerText = `1 CHF = ${(1 / chf).toFixed(3)} €`;
+                }
+                if (usd) {
+                    document.getElementById('usdDirect').innerText = `1 € = ${usd.toFixed(3)} $`;
+                    document.getElementById('usdInverse').innerText = `1 $ = ${(1 / usd).toFixed(3)} €`;
+                }
+            }
+        } catch (e) {}
+    }
+    updateCurrencies();
+</script>
+</body>
+</html>
